@@ -13,7 +13,6 @@ import math
 screen_width = 100
 
 # Player class
-
 class Player:
     def __init__(self):
         self.name = ''
@@ -21,7 +20,9 @@ class Player:
         self.hp = 0
         self.mp = 0
         self.status_effects = []
-        self.location = 'start'
+        self.location = 'b2'
+        self.game_over = False
+
 
 my_player = Player()
 
@@ -193,11 +194,9 @@ zone_map = {
 def title_screen_selections():
     option = input('>> ')
     if option.lower() == 'play':
-        pass
-        # start_game() PLACEHOLDER
+        start_game()
     elif option.lower() == 'help':
-        pass
-        # help_menu() PLACEHOLDER
+        help_menu()
     elif option.lower() == 'quit':
         print('Are you sure you wish to exit?')
         if input().lower() == 'y' or 'yes':
@@ -208,7 +207,7 @@ def title_screen_selections():
 
 
 def title_screen():
-    os.system('clear')
+    os.system('cls')
     print('#####################################')
     print('# Welcome to the Legends of Moonsea #')
     print('#####################################')
@@ -228,53 +227,115 @@ def help_menu():
     title_screen_selections()
 
 # Game interactivity
+
+
 def print_location():
-       print('\n' + ('#' * (4 + len(my_player.location))))
-       print('# ' + my_player.location.upper() + ' #')
-       print('# ' + zone_map[my_player.position][DESCRIPTION] + ' #')
-       print('\n' + ('#' * (4 + len(my_player.location))))
+    print('\n' + ('#' * (4 + len(my_player.location))))
+    print('# ' + my_player.location.upper() + ' #')
+    print('# ' + zone_map[my_player.position][DESCRIPTION] + ' #')
+    print('\n' + ('#' * (4 + len(my_player.location))))
+
 
 def prompt():
-       print('\n' + '====================================')
-       print('What would you like to do?')
-       action = input('>> ')
-       acceptable_actions = ['move', 'go', 'travel', 'walk', 'quit', 'examine', 'inspect', 'interact', 'look']
-       while action.lower not in acceptable_actions:
-              print("Unknown action, try again")
-              prompt()
-       if action.lower() == 'quit':
-              sys.exit()
-       elif action.lower() in ['move', 'go', 'travel', 'walk']:
-              player_move(action.lower())
-       if action.lower() in ['examine', 'inspect', 'interact', 'look']
-              player_examine(action.lower())
+    print('\n' + '====================================')
+    print('What would you like to do?')
+    action = input('>> ')
+    acceptable_actions = ['move', 'go', 'travel', 'walk',
+                          'quit', 'exit', 'examine', 'inspect', 'interact', 'look']
+    while action.lower() not in acceptable_actions:
+        print("Unknown action, try again")
+        prompt()
+    if action.lower() == 'quit' or 'exit':
+        sys.exit()
+    elif action.lower() in ['move', 'go', 'travel', 'walk']:
+        player_move(action.lower())
+    if action.lower() in ['examine', 'inspect', 'interact', 'look']:
+        player_examine(action.lower())
+
 
 def player_move(my_action):
-       ask = 'In what direction?\n'
-       direction = input(ask).lower()
-       if direction in ['up', 'north']:
-              direction = zone_map[my_player.location][UP]
-              movement_handler(direction)
-       elif direction in ['down', 'south']:
-               direction = zone_map[my_player.location][DOWN]
-               movement_handler(direction)
-       elif direction in ['right', 'east']:
-               direction = zone_map[my_player.location][RIGHT]
-               movement_handler(direction)
-       elif direction in ['left', 'west']:
-               direction = zone_map[my_player.location][LEFT]
-               movement_handler(direction)
+    ask = 'In what direction?\n'
+    direction = input(ask).lower()
+    if direction in ['up', 'north']:
+        direction = zone_map[my_player.location][UP]
+        movement_handler(direction)
+    elif direction in ['down', 'south']:
+        direction = zone_map[my_player.location][DOWN]
+        movement_handler(direction)
+    elif direction in ['right', 'east']:
+        direction = zone_map[my_player.location][RIGHT]
+        movement_handler(direction)
+    elif direction in ['left', 'west']:
+        direction = zone_map[my_player.location][LEFT]
+        movement_handler(direction)
+
 
 def movement_handler(direction):
-       print('\nYou have moved to the' + direction + '.')
-       my_player.location = direction
-       print_location()
+    print('\nYou have moved to the' + direction + '.')
+    my_player.location = direction
+    print_location()
+
 
 def player_examine(action):
-       if zone_map[my_player.location][CLEARED]:
-              print('This zone has already been cleared.')  
-       else:
-              print('Events here.')
+    if zone_map[my_player.location][CLEARED]:
+        print('This zone has already been cleared.')
+    else:
+        print('Events here.')
+
+
 # Game functionality
 def start_game():
-    pass
+    setup_game()
+    main_game_loop()
+
+
+def main_game_loop():
+    while my_player.game_over is False:
+        prompt()
+        # Check if all zones cleared, enemies defeated, etc.
+
+
+def setup_game():
+    os.system('cls')
+    ask_name = "What is your name?\n"
+    for character in ask_name:
+        sys.stdout.write(character)
+        sys.stdout.flush()
+        time.sleep(.009)
+    player_name = input('>> ')
+    my_player.name = player_name
+
+    ask_job = f"What is your job, {my_player.name}?\n"
+    for character in ask_job:
+        sys.stdout.write(character)
+        sys.stdout.flush()
+        time.sleep(.009)
+    player_job = input('>> ')
+    while player_job.lower() not in ['warrior', 'mage', 'rogue']:
+        print("This is not a valid job, please choose either Warrior, Mage or Rogue.\n")
+        player_job = input('>> ')
+    my_player.job = player_job.lower()
+    # print(f"You have chosen the {my_player.job} class.\n")
+
+    if my_player.job == 'warrior':
+        my_player.hp = 20
+        my_player.mp = 5
+    elif my_player.job == 'mage':
+        my_player.hp = 10
+        my_player.mp = 20
+    elif my_player.job == 'rogue':
+        my_player.hp = 15
+        my_player.mp = 10
+
+    welcome_message = f'''Welcome, .\n
+    Welcome to Moonsea, {my_player.name} the {my_player.job}...\n
+    You feel a storm brewing around you...\n
+    Watch the shadows closely...'''
+    for character in welcome_message:
+        sys.stdout.write(character)
+        sys.stdout.flush()
+        time.sleep(.009)
+    time.sleep(1.5)
+    os.system('cls')
+
+title_screen()
