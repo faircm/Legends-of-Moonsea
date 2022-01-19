@@ -181,6 +181,8 @@ zone_map = {
 }
 
 # Title screen functionality
+
+
 def title_screen_selections():
     option = input('>> ')
     if option.lower() == 'play':
@@ -196,6 +198,8 @@ def title_screen_selections():
         title_screen_selections()
 
 # Title screen display
+
+
 def title_screen():
     print('''  _                               _              __  
  | |                             | |            / _| 
@@ -221,6 +225,8 @@ def title_screen():
     title_screen_selections()
 
 #
+
+
 def help_menu():
     print('######################################')
     print('#   Welcome to Legends of Moonsea    #')
@@ -234,10 +240,9 @@ def help_menu():
 
 
 def print_location():
-    print('\n' + ('#' * (4 + len(my_player.location))))
-    print('# ' + my_player.location.upper() + ' #')
+    print('\n' + ('#' * (4 + len(zone_map[my_player.location][DESCRIPTION]))))
     print('# ' + zone_map[my_player.location][DESCRIPTION] + ' #')
-    print('\n' + ('#' * (4 + len(my_player.location))))
+    print('#' * (4 + len(zone_map[my_player.location][DESCRIPTION])))
 
 
 def player_move(my_action):
@@ -262,12 +267,11 @@ def movement_handler(destination):
     my_player.location = destination
     print_location()
 
-
 def player_examine(action):
     if zone_map[my_player.location][CLEARED]:
         print('This zone has already been cleared.')
     else:
-        print('Events here.')
+        print(zone_map[my_player.location][EXAMINATION])
 
 
 def prompt():
@@ -288,9 +292,11 @@ def prompt():
 
 # Game functionality
 
+
 def start_game():
     setup_game()
     main_game_loop()
+
 
 def main_game_loop():
     while my_player.game_over is False:
@@ -341,5 +347,6 @@ def setup_game():
         time.sleep(.01)
     time.sleep(1.5)
     os.system('cls')
+
 
 title_screen()
