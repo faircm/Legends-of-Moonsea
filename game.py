@@ -9,23 +9,12 @@ import os
 import time
 import random
 import math
+from Player import Player
 
-screen_width = 100
-
-# Player class
-class Player:
-    def __init__(self):
-        self.name = ''
-        self.job = ''
-        self.hp = 0
-        self.mp = 0
-        self.status_effects = []
-        self.location = 'b2'
-        self.game_over = False
-
-
+# Create Player object
 my_player = Player()
 
+# Declare constants
 ZONENAME = ''
 DESCRIPTION = 'description'
 EXAMINATION = 'examination'
@@ -35,6 +24,7 @@ DOWN = 'down', 'south'
 LEFT = 'left', 'west'
 RIGHT = 'right', 'east'
 
+# Create list of cleared zones within the map
 cleared_places = {
     'a1': False, 'a2': False, 'a3': False, 'a4': False,
     'b1': False, 'b2': False, 'b3': False, 'b4': False,
@@ -42,10 +32,11 @@ cleared_places = {
     'd1': False, 'd2': False, 'd3': False, 'd4': False
 }
 
+# Create map
 zone_map = {
     'a1': {ZONENAME: "Town Hospital",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'This is the town hospital',
+           EXAMINATION: 'The hospital is surprisingly high-tech',
            CLEARED: False,
            UP: '',
            DOWN: 'b1',
@@ -53,8 +44,8 @@ zone_map = {
            RIGHT: 'a2'
            },
     'a2': {ZONENAME: "Town Entrance",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'This is the main entrance to the town',
+           EXAMINATION: 'Many souls have passed through these gates',
            CLEARED: False,
            UP: '',
            DOWN: 'b2',
@@ -62,8 +53,8 @@ zone_map = {
            RIGHT: 'a3'
            },
     'a3': {ZONENAME: "Town Square",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'This is the town square, where events happen',
+           EXAMINATION: 'The square is empty right now',
            CLEARED: False,
            UP: '',
            DOWN: 'b3',
@@ -71,8 +62,8 @@ zone_map = {
            RIGHT: 'a4'
            },
     'a4': {ZONENAME: "Town Hall",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'This is town hall, where all important decisions are made',
+           EXAMINATION: 'I think I\'d rather stay out here.',
            CLEARED: False,
            UP: '',
            DOWN: 'b4',
@@ -80,8 +71,8 @@ zone_map = {
            RIGHT: ''
            },
     'b1': {ZONENAME: "Grassy Plain 1",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'A grassy plain',
+           EXAMINATION: 'There are some pretty flowers here',
            CLEARED: False,
            UP: 'a1',
            DOWN: 'c1',
@@ -98,8 +89,8 @@ zone_map = {
            RIGHT: 'b3'
            },
     'b3': {ZONENAME: "Grassy Plain 3",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'A grassy plain',
+           EXAMINATION: 'Not much to see here',
            CLEARED: False,
            UP: 'a3',
            DOWN: 'c3',
@@ -107,8 +98,8 @@ zone_map = {
            RIGHT: 'b4'
            },
     'b4': {ZONENAME: "Grassy Plain 4",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'A grassy plain',
+           EXAMINATION: 'Not much to see here',
            CLEARED: False,
            UP: 'a4',
            DOWN: 'c4',
@@ -116,8 +107,8 @@ zone_map = {
            RIGHT: ''
            },
     'c1': {ZONENAME: "Dark Woods 1",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'Dark, spooky woods',
+           EXAMINATION: 'You can hear critters moving around you...',
            CLEARED: False,
            UP: 'b1',
            DOWN: 'd1',
@@ -125,8 +116,8 @@ zone_map = {
            RIGHT: 'c2'
            },
     'c2': {ZONENAME: "Dark Woods 2",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'Dark, spooky woods',
+           EXAMINATION: 'It\'s extremely quiet here',
            CLEARED: False,
            UP: 'b2',
            DOWN: 'd2',
@@ -134,8 +125,8 @@ zone_map = {
            RIGHT: 'c3'
            },
     'c3': {ZONENAME: "Dark Woods 3",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'Dark, spooky woods',
+           EXAMINATION: 'Hey, what\'s this flyer? "Thanks for looking at my projects!! - CF"',
            CLEARED: False,
            UP: 'b3',
            DOWN: 'd3',
@@ -143,8 +134,8 @@ zone_map = {
            RIGHT: 'c4'
            },
     'c4': {ZONENAME: "Dark Woods 4",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'Dark, spooky woods',
+           EXAMINATION: 'There\'s nothing special here',
            CLEARED: False,
            UP: 'b4',
            DOWN: 'd4',
@@ -152,8 +143,8 @@ zone_map = {
            RIGHT: ''
            },
     'd1': {ZONENAME: "Burned Village 1",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'A formerly beautiful village, recently plundered',
+           EXAMINATION: 'It looks like there used to be houses here',
            CLEARED: False,
            UP: 'c1',
            DOWN: '',
@@ -161,8 +152,8 @@ zone_map = {
            RIGHT: 'd2'
            },
     'd2': {ZONENAME: "Burned Village 2",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'A formerly beautiful village, recently plundered',
+           EXAMINATION: 'Looks like the remnants of some sort of store',
            CLEARED: False,
            UP: 'c2',
            DOWN: '',
@@ -170,8 +161,8 @@ zone_map = {
            RIGHT: 'd3'
            },
     'd3': {ZONENAME: "Burned Village 3",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'A formerly beautiful village, recently plundered',
+           EXAMINATION: 'There\'s still a lot of smoke here',
            CLEARED: False,
            UP: 'c3',
            DOWN: '',
@@ -179,8 +170,8 @@ zone_map = {
            RIGHT: 'd4'
            },
     'd4': {ZONENAME: "Burned Village 4",
-           DESCRIPTION: 'description',
-           EXAMINATION: 'examination',
+           DESCRIPTION: 'A formerly beautiful village, recently plundered',
+           EXAMINATION: 'A community garden, looks like it won\'t be growing anything now.',
            CLEARED: False,
            UP: 'c4',
            DOWN: '',
@@ -189,8 +180,7 @@ zone_map = {
            }
 }
 
-# Title Screen Function
-
+# Title screen functionality
 def title_screen_selections():
     option = input('>> ')
     if option.lower() == 'play':
@@ -205,25 +195,39 @@ def title_screen_selections():
         print('Please enter a valid command.')
         title_screen_selections()
 
-
+# Title screen display
 def title_screen():
+    print('''  _                               _              __  
+ | |                             | |            / _| 
+ | |     ___  __ _  ___ _ __   __| |___    ___ | |_  
+ | |    / _ \/ _` |/ _ \ '_ \ / _` / __|  / _ \|  _| 
+ | |___|  __/ (_| |  __/ | | | (_| \__ \ | (_) | |   
+ |______\___|\__, |\___|_| |_|\__,_|___/  \___/|_|   
+ |  \/  |     __/ |                                  
+ | \  / | ___|___/_  _ __  ___  ___  __ _            
+ | |\/| |/ _ \ / _ \| '_ \/ __|/ _ \/ _` |           
+ | |  | | (_) | (_) | | | \__ \  __/ (_| |           
+ |_|  |_|\___/ \___/|_| |_|___/\___|\__,_|           
+                                                     
+                                                     ''')
+    time.sleep(1)
     os.system('cls')
-    print('#####################################')
-    print('# Welcome to the Legends of Moonsea #')
-    print('#####################################')
-    print('*              -PLAY-               *')
-    print('*              -HELP-               *')
-    print('*              -QUIT-               *')
+    print('######################################')
+    print('#   Welcome to Legends of Moonsea    #')
+    print('######################################')
+    print('*              -PLAY-                *')
+    print('*              -HELP-                *')
+    print('*              -QUIT-                *')
     title_screen_selections()
 
-
+#
 def help_menu():
-    print('#####################################')
-    print('# Welcome to the Legends of Moonsea #')
-    print('#####################################')
-    print('*       Use arrow keys to move      *')
-    print('*    Type commands to do actions    *')
-    print('*    Type look to inspect objects   *')
+    print('######################################')
+    print('#   Welcome to Legends of Moonsea    #')
+    print('######################################')
+    print('*       Type \'move\' to explore     *')
+    print('*     Type examine to look around    *')
+    print('*Type \'attack\' or \'run\' in combat*')
     title_screen_selections()
 
 # Game interactivity
@@ -232,47 +236,30 @@ def help_menu():
 def print_location():
     print('\n' + ('#' * (4 + len(my_player.location))))
     print('# ' + my_player.location.upper() + ' #')
-    print('# ' + zone_map[my_player.position][DESCRIPTION] + ' #')
+    print('# ' + zone_map[my_player.location][DESCRIPTION] + ' #')
     print('\n' + ('#' * (4 + len(my_player.location))))
-
-
-def prompt():
-    print('\n' + '====================================')
-    print('What would you like to do?')
-    action = input('>> ')
-    acceptable_actions = ['move', 'go', 'travel', 'walk',
-                          'quit', 'exit', 'examine', 'inspect', 'interact', 'look']
-    while action.lower() not in acceptable_actions:
-        print("Unknown action, try again")
-        prompt()
-    if action.lower() == 'quit' or 'exit':
-        sys.exit()
-    elif action.lower() in ['move', 'go', 'travel', 'walk']:
-        player_move(action.lower())
-    if action.lower() in ['examine', 'inspect', 'interact', 'look']:
-        player_examine(action.lower())
 
 
 def player_move(my_action):
     ask = 'In what direction?\n'
-    direction = input(ask).lower()
-    if direction in ['up', 'north']:
-        direction = zone_map[my_player.location][UP]
-        movement_handler(direction)
-    elif direction in ['down', 'south']:
-        direction = zone_map[my_player.location][DOWN]
-        movement_handler(direction)
-    elif direction in ['right', 'east']:
-        direction = zone_map[my_player.location][RIGHT]
-        movement_handler(direction)
-    elif direction in ['left', 'west']:
-        direction = zone_map[my_player.location][LEFT]
-        movement_handler(direction)
+    destination = input(ask)
+    if destination in ['up', 'north', ]:
+        destination = zone_map[my_player.location][UP]
+        movement_handler(destination)
+    elif destination in ['down', 'south']:
+        destination = zone_map[my_player.location][DOWN]
+        movement_handler(destination)
+    elif destination in ['right', 'east']:
+        destination = zone_map[my_player.location][RIGHT]
+        movement_handler(destination)
+    elif destination in ['left', 'west']:
+        destination = zone_map[my_player.location][LEFT]
+        movement_handler(destination)
 
 
-def movement_handler(direction):
-    print('\nYou have moved to the' + direction + '.')
-    my_player.location = direction
+def movement_handler(destination):
+    print(f'\nYou have moved to {destination}.')
+    my_player.location = destination
     print_location()
 
 
@@ -283,11 +270,27 @@ def player_examine(action):
         print('Events here.')
 
 
+def prompt():
+    print('\n' + '====================================')
+    print('What would you like to do?')
+    action = input('>> ').lower()
+    acceptable_actions = ['move', 'go', 'travel', 'walk',
+                          'quit', 'exit', 'examine', 'inspect', 'interact', 'look']
+    while action not in acceptable_actions:
+        print("Unknown action, try again")
+        prompt()
+    if action in ['move', 'go', 'travel', 'walk']:
+        player_move(action.lower())
+    elif action in ['examine', 'inspect', 'interact', 'look']:
+        player_examine(action.lower())
+    elif action in ['quit', 'exit']:
+        sys.exit()
+
 # Game functionality
+
 def start_game():
     setup_game()
     main_game_loop()
-
 
 def main_game_loop():
     while my_player.game_over is False:
@@ -301,7 +304,7 @@ def setup_game():
     for character in ask_name:
         sys.stdout.write(character)
         sys.stdout.flush()
-        time.sleep(.009)
+        time.sleep(.001)
     player_name = input('>> ')
     my_player.name = player_name
 
@@ -309,7 +312,7 @@ def setup_game():
     for character in ask_job:
         sys.stdout.write(character)
         sys.stdout.flush()
-        time.sleep(.009)
+        time.sleep(.001)
     player_job = input('>> ')
     while player_job.lower() not in ['warrior', 'mage', 'rogue']:
         print("This is not a valid job, please choose either Warrior, Mage or Rogue.\n")
@@ -327,14 +330,15 @@ def setup_game():
         my_player.hp = 15
         my_player.mp = 10
 
-    welcome_message = f'''Welcome, .\n
+    welcome_message = f'''
     Welcome to Moonsea, {my_player.name} the {my_player.job}...\n
     You feel a storm brewing around you...\n
-    Watch the shadows closely...'''
+    Watch the shadows closely...
+    '''
     for character in welcome_message:
         sys.stdout.write(character)
         sys.stdout.flush()
-        time.sleep(.009)
+        time.sleep(.01)
     time.sleep(1.5)
     os.system('cls')
 
